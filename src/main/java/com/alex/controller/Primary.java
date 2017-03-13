@@ -1,14 +1,11 @@
 package com.alex.controller;
 
 import com.alex.common.AppProp;
+import com.alex.common.Const;
 import com.alex.common.cache.CacheService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.connection.RedisConnection;
-import org.springframework.data.redis.core.RedisConnectionUtils;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -40,7 +37,7 @@ public class Primary {
         log.debug(request.getRequestURI());
 
         String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-        cacheService.valueSet("lastAccess", time);
+        cacheService.valueSet(this.getClass(), Const.CACHE_KEY_LASTACCESS, time);
 
         return time;
     }
@@ -50,7 +47,7 @@ public class Primary {
     public String lastAccess() {
         log.debug(request.getRequestURI());
 
-        String last = cacheService.valueGet("lastAccess");
+        String last = cacheService.valueGet(Primary.class, Const.CACHE_KEY_LASTACCESS);
         if (last == null) {
             last = "no data";
         }
